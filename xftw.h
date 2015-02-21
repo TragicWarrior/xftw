@@ -40,8 +40,6 @@
 #ifndef _XFTW_H_
 #define	_XFTW_H_
 
-#include <features.h>
-
 // included only for FTW data structure and defines
 #include <ftw.h>
 

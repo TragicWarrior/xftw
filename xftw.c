@@ -32,7 +32,6 @@
 
 #include "list.h"
 #include "xftw.h"
-#include "normalize.h"
 
 typedef struct _dir_record_s    dir_record_t;
 

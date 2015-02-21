@@ -14,16 +14,18 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed")
 # ensure large file support 
 add_definitions("-D_FILE_OFFSET_BITS=64")
 add_definitions("-D_LARGEFILE64_SOURCE")
+add_definitions("-D_LARGEFILE_SOURCE")
+add_definitions("-D__USE_LARGEFILE64")
 
 # this will provide access to struct FTW
-add_definitions("-D_XOPEN_SOURCE=500")
+add_definitions("-D_XOPEN_SOURCE=700")
 
-add_library(xftw OBJECT
+add_library(xftw.o OBJECT
     xftw.c
     )
 
-add_library(libxftw SHARED
-    $<TARGET_OBJECTS:xftw>
+add_library(xftw SHARED
+    $<TARGET_OBJECTS:xftw.o>
     )
 
-install (TARGETS libxftw DESTINATION lib)
+install (TARGETS xftw DESTINATION lib)

@@ -40,6 +40,16 @@
 #ifndef _XFTW_H_
 #define	_XFTW_H_
 
+
+// BSD systems don't have lstat64 & stat64 monikers
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+
+#define stat64  stat
+#define lstat64 lstat
+
+#endif
+
+
 // included only for FTW data structure and defines
 #include <ftw.h>
 

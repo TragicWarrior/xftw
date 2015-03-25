@@ -3,9 +3,9 @@ About
 
 This library approximates the behavior of the now obsolete
 POSIX ftw() and it's successor nftw().  Some nftw() analogs
-are implemented and some are unfisihed.  Unfortunately, there will
+are implemented and some are unfinisihed.  Unfortunately, there will
 never be compelete parity due to the intentional behavior of xftw().
-herever possible, ntfw() behavior is preserved.
+Wherever possible, ntfw() behavior is preserved.
 
 
 Rationale

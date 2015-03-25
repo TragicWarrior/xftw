@@ -29,3 +29,4 @@ add_library(xftw SHARED
     )
 
 install (TARGETS xftw DESTINATION lib)
+install (FILES "${PROJECT_BINARY_DIR}/xftw.h" DESTINATION include)

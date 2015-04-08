@@ -61,9 +61,11 @@ _xftw_stat_record(const char *path, dir_record_t *record, int flags);
 int
 xftw(const char *path, XFTWFunc callback, int nfds, int flags, void *anything)
 {
-    dir_record_t        record;
+    dir_record_t        *record;
     dir_record_t        *node;
     struct list_head    *pos;
+    struct list_head    *safe_copy;
+
 
     char                *curr_dir = NULL;
 
@@ -74,11 +76,12 @@ xftw(const char *path, XFTWFunc callback, int nfds, int flags, void *anything)
     if(path == NULL) return -1;
     if(callback == NULL) return -1;
 
-    retval = _xftw_stat_record(path, &record, flags);
+    record = (dir_record_t*)calloc(1, sizeof(*record));
+    retval = _xftw_stat_record(path, record, flags);
 
     // make sure path can be opened and it's a directory
     if(retval == -1) return -1;
-    if(!S_ISDIR(record.info.st_mode)) return -1;
+    if(!S_ISDIR(record->info.st_mode)) return -1;
 
     // nfds is unused for now
     if(nfds < 1)
@@ -92,14 +95,14 @@ xftw(const char *path, XFTWFunc callback, int nfds, int flags, void *anything)
 
     }
 
-    snprintf(record.filepath, PATH_MAX, "%s", path);
+    snprintf(record->filepath, PATH_MAX, "%s", path);
 
-    INIT_LIST_HEAD(&record.list);
+    INIT_LIST_HEAD(&record->list);
 
-    retval = _xftw_recurse_path(path, &record.list);
+    retval = _xftw_recurse_path(path, &record->list);
 
     // first loop builds a list of files and folder
-    list_for_each(pos, &record.list)
+    list_for_each_safe(pos, safe_copy, &record->list)
     {
         node = list_entry(pos, dir_record_t, list);
 
@@ -119,7 +122,7 @@ xftw(const char *path, XFTWFunc callback, int nfds, int flags, void *anything)
                 }
 
                 level++;
-                _xftw_recurse_path(node->filepath, &record.list);
+                _xftw_recurse_path(node->filepath, &record->list);
                 level--;
 
                 if((flags & FTW_CHDIR) && (curr_dir != NULL))
@@ -140,11 +143,20 @@ xftw(const char *path, XFTWFunc callback, int nfds, int flags, void *anything)
 
         node->ftwbuf.level = level;
         callback(node->filepath, &node->info, type, &node->ftwbuf, anything);
+
+        // Cleanup entry as we are done with it
+        free(node);
     }
+
+    // Now that loop is done the entire list is invalid
+    INIT_LIST_HEAD(&record->list);
 
     // perform callback on root node
     type = FTW_D;
-    callback(path, &record.info, type, &record.ftwbuf, anything);
+    callback(path, &record->info, type, &record->ftwbuf, anything);
+
+    // Cleanup root node
+    free(record);
 
     return 0;
 }

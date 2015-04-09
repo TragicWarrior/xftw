@@ -43,10 +43,11 @@ configure_file(
 install (TARGETS xftw DESTINATION lib)
 install (FILES "${PROJECT_BINARY_DIR}/xftw.h" DESTINATION include)
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    set(PKG_CONFIG_INSTALL_DIR "lib/pkgconfig")
-else()
+# Install pkgconfig files to libdata on BSD, otherwise lib
+if(CMAKE_SYSTEM_NAME MATCHES "BSD")
     set(PKG_CONFIG_INSTALL_DIR "libdata/pkgconfig")
+else()
+    set(PKG_CONFIG_INSTALL_DIR "lib/pkgconfig")
 endif()
 install (FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc" DESTINATION ${PKG_CONFIG_INSTALL_DIR})
 

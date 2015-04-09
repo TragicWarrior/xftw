@@ -28,5 +28,26 @@ add_library(xftw SHARED
     $<TARGET_OBJECTS:xftw.o>
     )
 
+# set the subst vars that configure_file() will use
+set(PROJECT_VERSION 1.0)
+
+set(PKG_CONFIG_LIBS
+    "-lxftw"
+)
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/pkg-config.pc.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+)
+
 install (TARGETS xftw DESTINATION lib)
 install (FILES xftw.h DESTINATION include)
+
+# Install pkgconfig files to libdata on BSD, otherwise lib
+if(CMAKE_SYSTEM_NAME MATCHES "BSD")
+    set(PKG_CONFIG_INSTALL_DIR "libdata/pkgconfig")
+else()
+    set(PKG_CONFIG_INSTALL_DIR "lib/pkgconfig")
+endif()
+install (FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc" DESTINATION ${PKG_CONFIG_INSTALL_DIR})
+

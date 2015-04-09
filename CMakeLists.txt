@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(libxftw)
 
+find_package(PkgConfig)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fPIC")
 
 if (("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang") OR (("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU") AND (CMAKE_C_COMPILER_VERSION VERSION_GREATER 4.0)))
@@ -28,5 +30,18 @@ add_library(xftw SHARED
     $<TARGET_OBJECTS:xftw.o>
     )
 
+# set the subst vars that configure_file() will use
+set(PROJECT_VERSION 1.0)
+
+set(PKG_CONFIG_LIBS
+    "-lxftw"
+)
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/pkg-config.pc.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+)
+
 install (TARGETS xftw DESTINATION lib)
 install (FILES "${PROJECT_BINARY_DIR}/xftw.h" DESTINATION include)
+install (FILES "${PROJECT_BINARY_DIR}/libxftw.pc" DESTINATION lib/pkgconfig)

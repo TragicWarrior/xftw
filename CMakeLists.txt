@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 project(libxftw)
 
-find_package(PkgConfig)
-
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fPIC")
 
 if (("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang") OR (("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU") AND (CMAKE_C_COMPILER_VERSION VERSION_GREATER 4.0)))

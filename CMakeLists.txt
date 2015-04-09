@@ -44,7 +44,9 @@ install (TARGETS xftw DESTINATION lib)
 install (FILES "${PROJECT_BINARY_DIR}/xftw.h" DESTINATION include)
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    install (FILES "${PROJECT_BINARY_DIR}/libxftw.pc" DESTINATION lib/pkgconfig)
+    set(PKG_CONFIG_INSTALL_DIR "lib/pkgconfig")
 else()
-    install (FILES "${PROJECT_BINARY_DIR}/libxftw.pc" DESTINATION libdata/pkgconfig)
+    set(PKG_CONFIG_INSTALL_DIR "libdata/pkgconfig")
 endif()
+install (FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc" DESTINATION ${PKG_CONFIG_INSTALL_DIR})
+

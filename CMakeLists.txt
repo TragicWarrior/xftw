@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 project(libxftw)
 
-find_package(PkgConfig)
-
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fPIC")
 
 if (("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang") OR (("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU") AND (CMAKE_C_COMPILER_VERSION VERSION_GREATER 4.0)))
@@ -45,8 +43,11 @@ configure_file(
 install (TARGETS xftw DESTINATION lib)
 install (FILES "${PROJECT_BINARY_DIR}/xftw.h" DESTINATION include)
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    install (FILES "${PROJECT_BINARY_DIR}/libxftw.pc" DESTINATION lib/pkgconfig)
+# Install pkgconfig files to libdata on BSD, otherwise lib
+if(CMAKE_SYSTEM_NAME MATCHES "BSD")
+    set(PKG_CONFIG_INSTALL_DIR "libdata/pkgconfig")
 else()
-    install (FILES "${PROJECT_BINARY_DIR}/libxftw.pc" DESTINATION libdata/pkgconfig)
+    set(PKG_CONFIG_INSTALL_DIR "lib/pkgconfig")
 endif()
+install (FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc" DESTINATION ${PKG_CONFIG_INSTALL_DIR})
+
